@@ -7,6 +7,8 @@ from core.crud import subscription as subscription_crud
 
 from sqlmodel import Session
 
+from datetime import datetime
+
 database.create_db_and_tables()
 app = FastAPI()
 
@@ -31,7 +33,8 @@ async def subscriptions(db_session: Session = Depends(get_db)):
 
 @app.post('/chat')
 async def respond_to_chat(query: Annotated[str, Form()],
-                            session_id: Optional[str] = Header(None),
+                            session_token: Optional[str] = Header(None),
                             db_session: Session = Depends(get_db)):
-            return "Yes"
-            
+            request_time = datetime.now()
+            formatted_time = request_time.strftime("%Y-%m-%d %H:%M:%S")
+            return { 'query': query, 'response': f"Echoing {query}", 'request_time': formatted_time}
